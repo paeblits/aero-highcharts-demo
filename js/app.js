@@ -2,7 +2,10 @@
 
 var myapp = angular.module('myapp', ["highcharts-ng"]);
 
-myapp.controller('myctrl', function ($scope) {
+myapp.controller('myctrl', function ($scope, $timeout) {
+  $scope.interval = 1000;
+  $scope.showJSON = true;
+  $scope.prettyJSON = true;
 
   $scope.chartTypes = [
     {"id": "line", "title": "Line"},
@@ -42,14 +45,39 @@ myapp.controller('myctrl', function ($scope) {
     {"id": "percent", "title": "Percent"}
   ];
 
+  // adds the data points [1,10,20] to a randomly selected series
   $scope.addPoints = function () {
     var seriesArray = $scope.chartConfig.series;
     var rndIdx = Math.floor(Math.random() * seriesArray.length);
     seriesArray[rndIdx].data = seriesArray[rndIdx].data.concat([1, 10, 20])
   };
 
+  // adds random data points to all series
+  $scope.addPointsToAll = function () {
+    var seriesArr = $scope.chartConfig.series;
+    var length = seriesArr.length;
+    for(var i=0; i<length; i++)
+    {
+      var rand1 = Math.floor(Math.random() * 20);
+      var rand2 = Math.floor(Math.random() * 20);
+      var rand3 = Math.floor(Math.random() * 20);
+      seriesArr[i].data = seriesArr[i].data.concat([rand1, rand2, rand3]);
+    }
+    $timeout($scope.addPointsToAll, $scope.interval);
+  };
+
+  $scope.start = function () {
+    $timeout($scope.addPointsToAll, $scope.interval);
+  }
+
+  $scope.stop = function () {
+    
+  }
+
+  // we can push an array of data to the series array
+  // without giving it any other properties and it will generate
   $scope.addSeries = function () {
-    var rnd = []
+    var rnd = [];
     for (var i = 0; i < 10; i++) {
       rnd.push(Math.floor(Math.random() * 20) + 1)
     }
@@ -98,7 +126,7 @@ myapp.controller('myctrl', function ($scope) {
       text: 'Helloo'
     },
     credits: {
-      enabled: true
+      enabled: false
     },
     loading: false,
     size: {
@@ -110,6 +138,22 @@ myapp.controller('myctrl', function ($scope) {
   $scope.reflow = function () {
     $scope.$broadcast('highchartsng.reflow');
   };
+
+  $scope.increaseSpeed = function() {
+    if($scope.interval === 1000) {
+      $scope.interval = 200;
+    } else if ($scope.interval === 200) {
+      $scope.interval = 100;
+    }
+  }
+
+  $scope.decreaseSpeed = function() {
+    if($scope.interval === 100) {
+      $scope.interval = 200;
+      } else if ($scope.interval === 200) {
+          $scope.interval = 1000;
+      }
+  }
 
 
 });

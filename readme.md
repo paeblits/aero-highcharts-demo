@@ -1,4 +1,4 @@
-### Highcharts Demo 
+## Highcharts and AngularJS Demo 
 ####To Run: 
 Simply clone and open `index.html`.
 
