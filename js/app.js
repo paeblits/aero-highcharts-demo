@@ -1,11 +1,16 @@
 'use strict';
 
-var myapp = angular.module('myapp', ["highcharts-ng"]);
+var myapp = angular.module('myapp', ["highcharts-ng", "ngAnimate"]);
 
 myapp.controller('myctrl', function ($scope, $timeout) {
   $scope.interval = 1000;
-  $scope.showJSON = true;
+  $scope.showJSON = false;
   $scope.prettyJSON = true;
+  $scope.chartList = [];
+  $scope.chartSeries =[];
+  $scope.numCharts= 0;  // keep track of how many charts (for ID)
+  $scope.optionsHover = false;
+  $scope.optionsShow = false;
 
   $scope.chartTypes = [
     {"id": "line", "title": "Line"},
@@ -33,10 +38,12 @@ myapp.controller('myctrl', function ($scope, $timeout) {
   ];
 
   $scope.chartSeries = [
-    {"name": "Some data", "data": [1, 2, 4, 7, 3]},
-    {"name": "Some data 3", "data": [3, 1, null, 5, 2], connectNulls: true},
-    {"name": "Some data 2", "data": [5, 2, 2, 3, 5], type: "column"},
-    {"name": "My Super Column", "data": [1, 1, 2, 3, 2], type: "column"}
+    {"name": "Some data", "data": [1, 2, 4, 7, 9]},
+    {"name": "Some data 3", "data": [3, 4, null, 5, 11], connectNulls: true},
+    {"name": "Some data 2", "data": [1, 2, 3, 5], type: "column"},
+    {"name": "My Super Column", "data": [1, 1, 2, 8, 9], type: "column"},
+    // we can omit the type and let highcharts interpret it
+    {"name": "My Super Column", "data": [[1,4], [2,3], [3,4], null, [4,2], [5,3]]}
   ];
 
   $scope.chartStack = [
@@ -44,6 +51,8 @@ myapp.controller('myctrl', function ($scope, $timeout) {
     {"id": "normal", "title": "Normal"},
     {"id": "percent", "title": "Percent"}
   ];
+
+  $scope.colors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'];
 
   // adds the data points [1,10,20] to a randomly selected series
   $scope.addPoints = function () {
@@ -81,7 +90,10 @@ myapp.controller('myctrl', function ($scope, $timeout) {
     for (var i = 0; i < 10; i++) {
       rnd.push(Math.floor(Math.random() * 20) + 1)
     }
+    var index = parseInt(Math.random() * $scope.colors.length);
+    var newColor = $scope.colors[index];
     $scope.chartConfig.series.push({
+      color: newColor,
       data: rnd
     })
   }
@@ -110,14 +122,32 @@ myapp.controller('myctrl', function ($scope, $timeout) {
     $scope.chartConfig.series = data;
   };
 
+  var seriesClick = function(seriesObj,event) {
+    alert(seriesObj.name + ' clicked\n' +
+                      'Alt: ' + event.altKey + '\n' +
+                      'Control: ' + event.ctrlKey + '\n' +
+                      'Shift: ' + event.shiftKey + '\n');
+    console.log(event);
+    // we have many things we can look at when a series is clicked such as:
+    // 
+  }
+
   $scope.chartConfig = {
     options: {
       chart: {
-        type: 'areaspline'
+        type: 'line',
+        animation: false,
+        reflow: true
       },
       plotOptions: {
         series: {
-          stacking: ''
+          cursor: 'pointer',
+          events: {
+            click: function (event) {
+              var seriesObj = this;
+              seriesClick(seriesObj,event);
+            }
+          }
         }
       }
     },
@@ -130,12 +160,13 @@ myapp.controller('myctrl', function ($scope, $timeout) {
     },
     loading: false,
     size: {
-      width: 700,
-      height: 380
+      //width: 700,
+      //height: 380
     }
   }
 
   $scope.reflow = function () {
+    console.log("reflow() called");
     $scope.$broadcast('highchartsng.reflow');
   };
 

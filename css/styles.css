@@ -1,0 +1,63 @@
+
+.chart-canvas {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
+}
+
+.options-icon {
+	position: relative;
+	bottom: 40px;
+	right: 10px;
+	height: 0;
+}
+
+.red {
+	color: red;
+}
+
+.options-icon:hover, .options-icon:focus {
+	cursor: pointer;
+	color: red;
+}
+
+.reflow {
+	cursor: pointer;
+}
+
+.reflow:hover, .reflow:focus {
+	color: red;
+}
+
+div.options {
+	padding: 0 10px 10px;
+	background-color: #eee;
+	border-left: 1px solid #bbb;
+	border-bottom: 2px solid #bbb;
+	border-right: 1px solid #bbb;
+}
+
+div.options {
+	-webkit-transition: all linear 0.5s;
+	transition: all linear 0.2s;
+}
+
+div.options hr {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+div.options label {
+	margin-bottom: 0;
+}
+div.options.ng-hide {
+	opacity: 0;
+}
+
+div.options h4 {
+
+}
+
+div.options p {
+
+}
